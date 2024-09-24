@@ -53,7 +53,7 @@ pub struct Requisition {
     pub id: String,
     pub created: String,
     pub redirect: String,
-    pub status: String,
+    pub status: RequisitionStatus,
     #[serde(rename = "institution_id")]
     pub institution_id: String,
     pub agreement: String,
@@ -67,6 +67,27 @@ pub struct Requisition {
     pub account_selection: bool,
     #[serde(rename = "redirect_immediate")]
     pub redirect_immediate: bool,
+}
+
+#[derive(Default, Debug, Copy, Clone, PartialEq, Serialize, Deserialize)]
+pub enum RequisitionStatus {
+    #[default]
+    #[serde(rename = "CR")]
+    Created,
+    #[serde(rename = "GC")]
+    GivingConsent,
+    #[serde(rename = "UA")]
+    UndergoingAuthentication,
+    #[serde(rename = "RJ")]
+    Rejected,
+    #[serde(rename = "SA")]
+    SelectingAccounts,
+    #[serde(rename = "GA")]
+    GrantingAccess,
+    #[serde(rename = "LN")]
+    Linked,
+    #[serde(rename = "EX")]
+    Expired,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]

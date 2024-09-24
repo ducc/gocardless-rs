@@ -273,7 +273,7 @@ impl Client {
     /// let institution_id = "institution_id".to_string();
     /// let agreement_id = "agreement_id".to_string();
     /// let reference = "reference".to_string();
-    /// let requisition = client.create_requisition(&redirect, &institution_id, &agreement_id, &reference).await?;
+    /// let requisition = client.create_requisition(&redirect, &institution_id, Some(&agreement_id), Some(&reference)).await?;
     /// ```
     ///
     /// This method requires that a token has been created and stored in the `created_token` field of the `Client` struct. If no token has been created, this method will return an error.
@@ -281,24 +281,27 @@ impl Client {
         &self,
         redirect: &str,
         institution_id: &str,
-        agreement_id: &str,
-        reference: &str,
+        agreement_id: Option<&str>,
+        reference: Option<&str>,
     ) -> Result<Requisition, Box<dyn std::error::Error>> {
         let access_token = self.created_token.clone().unwrap().access;
+
+        let mut request = json!({
+            "redirect": redirect,
+            "institution_id": institution_id,
+            "user_language": "EN" // TODO: configurable
+        });
+        if let Some(reference) = reference {
+            request["reference"] = json!(reference);
+        }
+        if let Some(agreement_id) = agreement_id {
+            request["agreement"] = json!(agreement_id);
+        }
 
         let response: Requisition = self
             .req_client
             .post(URL_REQUISITIONS)
-            .body(
-                json!({
-                    "redirect": redirect,
-                    "institution_id": institution_id,
-                    "reference": reference,
-                    "agreement": agreement_id,
-                    "user_language": "EN" // TODO: configurable
-                })
-                .to_string(),
-            )
+            .body(request.to_string())
             .header("Accept", "application/json")
             .header("Content-Type", "application/json")
             .header("Authorization", format!("Bearer {}", access_token))

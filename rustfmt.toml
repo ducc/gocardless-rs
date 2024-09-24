@@ -1,0 +1,1 @@
+# default empty rustfmt.toml to ensure that rustfmt doesn't pick up settings from the higher directories

@@ -134,7 +134,7 @@ pub struct TransactionAmount {
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CreditorAccount {
-    pub bban: String,
+    pub bban: Option<String>,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
